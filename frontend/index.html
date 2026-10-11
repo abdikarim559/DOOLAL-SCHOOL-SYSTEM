@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOOLAL SCHOOL â€” Management System</title>
+    <meta name="description" content="Professional school management system for student, teacher, class, and attendance administration.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="notification">
+        <i class="fa-solid fa-check-circle" id="notification-icon"></i>
+        <span id="notification-message">Action successful</span>
+    </div>
+
+    <!-- ============================================================
+         LOGIN SECTION
+         ============================================================ -->
+    <div id="login-section" class="login-wrapper">
+        <div class="login-container">
+            <div class="login-header">
+                <h2><i class="fa-solid fa-graduation-cap"></i> DOOLAL SCHOOL</h2>
+                <p>Sign in to your account</p>
+            </div>
+
+            <!-- Step 1: Email Form -->
+            <form id="email-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="admin@school.edu" required autocomplete="email">
+                </div>
+                <button type="submit" class="btn-primary w-100" id="send-otp-btn">
+                    <i class="fa-regular fa-envelope"></i> Continue with Email
+                </button>
+            </form>
+
+            <!-- Step 2: OTP Form (Hidden initially) -->
+            <form id="otp-form" class="hidden">
+                <div class="form-group">
+                    <label>Enter 6-Digit Verification Code</label>
+                    <p style="font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--space-3);">Code sent to <strong id="display-email" style="color: var(--text-primary)"></strong></p>
+                    <div class="otp-inputs">
+                        <input type="text" class="otp-box" maxlength="1" required inputmode="numeric" aria-label="Digit 1">
+                        <input type="text" class="otp-box" maxlength="1" required inputmode="numeric" aria-label="Digit 2">
+                        <input type="text" class="otp-box" maxlength="1" required inputmode="numeric" aria-label="Digit 3">
+                        <input type="text" class="otp-box" maxlength="1" required inputmode="numeric" aria-label="Digit 4">
+                        <input type="text" class="otp-box" maxlength="1" required inputmode="numeric" aria-label="Digit 5">
+                        <input type="text" class="otp-box" maxlength="1" required inputmode="numeric" aria-label="Digit 6">
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary w-100" id="verify-otp-btn">
+                    <i class="fa-solid fa-check"></i> Verify & Login
+                </button>
+                <div style="margin-top: var(--space-5); text-align: center;">
+                    <a href="#" id="resend-code-btn" style="color: var(--text-secondary); font-size: var(--text-sm); text-decoration: none; font-weight: 500;">Resend Code</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         MAIN APPLICATION
+         ============================================================ -->
+    <div id="app-section" class="app-wrapper hidden">
+
+        <!-- Mobile Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span class="logo-text">DOOLAL</span>
+                </h2>
+                <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Toggle sidebar">
+                    <i class="fa-solid fa-sidebar" id="sidebar-toggle-icon"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav" role="navigation" aria-label="Main navigation">
+                <!-- Main -->
+                <div class="nav-group">
+                    <div class="nav-group-label">Main</div>
+                    <a href="#" class="nav-item active" data-target="dashboard-view" role="menuitem">
+                        <i class="fa-solid fa-grid-2"></i> <span>Dashboard</span>
+                    </a>
+                </div>
+
+                <!-- Management -->
+                <div class="nav-group">
+                    <div class="nav-group-label">Management</div>
+                    <a href="#" class="nav-item" data-target="students-view" role="menuitem">
+                        <i class="fa-solid fa-user-graduate"></i> <span>Students</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="teachers-view" role="menuitem">
+                        <i class="fa-solid fa-chalkboard-user"></i> <span>Teachers</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="classes-view" role="menuitem">
+                        <i class="fa-solid fa-school"></i> <span>Classes</span>
+                    </a>
+                </div>
+
+                <!-- Academic -->
+                <div class="nav-group">
+                    <div class="nav-group-label">Academic</div>
+                    <a href="#" class="nav-item" data-target="academic-years-view" role="menuitem">
+                        <i class="fa-solid fa-calendar-days"></i> <span>Academic Years</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="terms-view" role="menuitem">
+                        <i class="fa-solid fa-layer-group"></i> <span>Terms</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="subjects-view" role="menuitem">
+                        <i class="fa-solid fa-book"></i> <span>Subjects</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="class-subjects-view" role="menuitem">
+                        <i class="fa-solid fa-link"></i> <span>Class Subjects</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="exams-view" role="menuitem">
+                        <i class="fa-solid fa-file-pen"></i> <span>Exams</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="marks-view" role="menuitem">
+                        <i class="fa-solid fa-marker"></i> <span>Marks</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="results-view" role="menuitem">
+                        <i class="fa-solid fa-square-poll-vertical"></i> <span>Results</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="reports-view" role="menuitem">
+                        <i class="fa-solid fa-chart-line"></i> <span>Reports</span>
+                    </a>
+                </div>
+
+                <!-- Operations -->
+                <div class="nav-group">
+                    <div class="nav-group-label">Operations</div>
+                    <a href="#" class="nav-item" data-target="attendance-view" role="menuitem">
+                        <i class="fa-solid fa-clipboard-check"></i> <span>Attendance</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="timetable-view" role="menuitem">
+                        <i class="fa-solid fa-calendar-week"></i> <span>Timetable</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="notices-view" role="menuitem">
+                        <i class="fa-solid fa-bullhorn"></i> <span>Notice Board</span>
+                    </a>
+                </div>
+
+                <!-- System -->
+                <div class="nav-group">
+                    <div class="nav-group-label">System</div>
+                    <a href="#" class="nav-item" data-target="users-view" role="menuitem">
+                        <i class="fa-solid fa-users-gear"></i> <span>Users</span>
+                    </a>
+                    <a href="#" class="nav-item" data-target="settings-view" role="menuitem">
+                        <i class="fa-solid fa-gear"></i> <span>Settings</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <button id="logout-btn" class="btn-logout">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> <span class="logout-text">Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="breadcrumb">
+                        <span>Home</span>
+                        <span class="breadcrumb-separator"><i class="fa-solid fa-chevron-right"></i></span>
+                        <span class="breadcrumb-current" id="breadcrumb-current">Dashboard</span>
+                    </div>
+                </div>
+
+                <div class="header-search" id="global-search-container">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="Search students, teachers, classes..." id="global-search-input" autocomplete="off">
+                    <span class="search-shortcut">/</span>
+                    <div class="search-results" id="search-results"></div>
+                </div>
+
+                <div class="header-actions">
+                    <button class="theme-toggle" id="theme-toggle-btn" title="Toggle theme" aria-label="Toggle light/dark mode">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <div class="notification-bell" id="notification-bell-btn" title="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="bell-badge" id="bell-badge"></span>
+                    </div>
+                    <div class="header-user">
+                        <div class="user-avatar">A</div>
+                        <div class="user-info">
+                            <span class="user-name">Admin</span>
+                            <span class="user-role">Administrator</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Views Container -->
+            <div class="view-section" id="views-container">
+
+                <!-- ==================== DASHBOARD ==================== -->
+                <div id="dashboard-view" class="view-content active">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Dashboard</h2>
+                            <p class="view-header-subtitle">Overview of your school at a glance</p>
+                        </div>
+                    </div>
+
+                    <!-- KPI Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card" id="card-students">
+                            <div class="stat-icon bg-neutral"><i class="fa-solid fa-user-graduate"></i></div>
+                            <div class="stat-details">
+                                <h3>Total Students</h3>
+                                <p id="stat-students" class="stat-value">â€”</p>
+                                <span class="stat-change neutral" id="stat-students-change"><i class="fa-solid fa-minus"></i> â€”</span>
+                            </div>
+                        </div>
+                        <div class="stat-card" id="card-teachers">
+                            <div class="stat-icon bg-neutral"><i class="fa-solid fa-chalkboard-user"></i></div>
+                            <div class="stat-details">
+                                <h3>Total Teachers</h3>
+                                <p id="stat-teachers" class="stat-value">â€”</p>
+                                <span class="stat-change neutral" id="stat-teachers-change"><i class="fa-solid fa-minus"></i> â€”</span>
+                            </div>
+                        </div>
+                        <div class="stat-card" id="card-classes">
+                            <div class="stat-icon bg-neutral"><i class="fa-solid fa-school"></i></div>
+                            <div class="stat-details">
+                                <h3>Total Classes</h3>
+                                <p id="stat-classes" class="stat-value">â€”</p>
+                                <span class="stat-change neutral" id="stat-classes-change"><i class="fa-solid fa-minus"></i> â€”</span>
+                            </div>
+                        </div>
+                        <div class="stat-card" id="card-attendance">
+                            <div class="stat-icon bg-neutral"><i class="fa-solid fa-clipboard-check"></i></div>
+                            <div class="stat-details">
+                                <h3>Today's Attendance</h3>
+                                <p id="stat-attendance" class="stat-value">â€”</p>
+                                <span class="stat-change neutral" id="stat-attendance-change"><i class="fa-solid fa-minus"></i> â€”</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Row -->
+                    <div class="dashboard-grid">
+                        <div class="section-card">
+                            <div class="section-title">
+                                Attendance Overview
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="attendanceChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="section-card">
+                            <div class="section-title">
+                                Student Distribution
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="genderChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions + Activity -->
+                    <div class="dashboard-grid-3">
+                        <div class="section-card">
+                            <div class="section-title">Recent Activities</div>
+                            <div class="activity-list">
+                                <div class="activity-item">
+                                    <div class="activity-info">
+                                        <h4>Midterm Exams Setup</h4>
+                                        <p><i class="fa-regular fa-clock"></i> Updated 2 hours ago</p>
+                                    </div>
+                                    <span class="activity-status status-ongoing">Ongoing</span>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-info">
+                                        <h4>Science Fair Organization</h4>
+                                        <p><i class="fa-regular fa-clock"></i> Yesterday</p>
+                                    </div>
+                                    <span class="activity-status status-pending">Pending</span>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-info">
+                                        <h4>Q1 Grade Reports</h4>
+                                        <p><i class="fa-regular fa-clock"></i> 3 days ago</p>
+                                    </div>
+                                    <span class="activity-status status-completed">Completed</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-card">
+                            <div class="section-title">Quick Actions</div>
+                            <div class="quick-actions-grid">
+                                <div class="quick-action-item" onclick="app.navigateTo('students-view'); setTimeout(() => app.showModal('student-modal'), 300);">
+                                    <i class="fa-solid fa-user-plus"></i>
+                                    Add Student
+                                </div>
+                                <div class="quick-action-item" onclick="app.navigateTo('teachers-view'); setTimeout(() => app.showModal('teacher-modal'), 300);">
+                                    <i class="fa-solid fa-user-tie"></i>
+                                    Add Teacher
+                                </div>
+                                <div class="quick-action-item" onclick="app.navigateTo('classes-view'); setTimeout(() => app.showModal('class-modal'), 300);">
+                                    <i class="fa-solid fa-plus-circle"></i>
+                                    Create Class
+                                </div>
+                                <div class="quick-action-item" onclick="app.navigateTo('attendance-view');">
+                                    <i class="fa-solid fa-clipboard-check"></i>
+                                    Attendance
+                                </div>
+                                <div class="quick-action-item" onclick="app.navigateTo('timetable-view');">
+                                    <i class="fa-solid fa-calendar-week"></i>
+                                    Timetable
+                                </div>
+                                <div class="quick-action-item" onclick="app.navigateTo('notices-view');">
+                                    <i class="fa-solid fa-bullhorn"></i>
+                                    Notice Board
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active School Announcements (P3) -->
+                    <div class="section-card" id="dashboard-notices-widget" style="margin-bottom: var(--space-5);">
+                        <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                            <span><i class="fa-solid fa-bullhorn" style="margin-right: 8px;"></i> School Announcements</span>
+                            <button class="btn-secondary btn-sm" onclick="app.navigateTo('notices-view')" style="padding: 4px 10px; font-size: var(--text-xs);">
+                                View All Notices
+                            </button>
+                        </div>
+                        <div id="dashboard-notices-list">
+                            <div class="skeleton skeleton-row" style="height: 38px; margin-bottom: 8px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Events -->
+                    <div class="section-card" style="margin-bottom: var(--space-5);">
+                        <div class="section-title">Upcoming Events</div>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-date">Oct 12, 2026</div>
+                                <div class="timeline-content">
+                                    <h4>Math Olympiad</h4>
+                                    <p>Inter-school mathematics competition in the main hall.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">Oct 15, 2026</div>
+                                <div class="timeline-content">
+                                    <h4>Parent-Teacher Meeting</h4>
+                                    <p>Quarterly review meeting for all grades starting at 9:00 AM.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">Oct 20, 2026</div>
+                                <div class="timeline-content">
+                                    <h4>Midterm Exams Begin</h4>
+                                    <p>Ensure all schedules are finalized.</p>
+                                    <div class="timeline-progress">
+                                        <div class="timeline-progress-bar" style="width: 40%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">Nov 01, 2026</div>
+                                <div class="timeline-content">
+                                    <h4>Public Holiday</h4>
+                                    <p>School will remain closed.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== STUDENTS ==================== -->
+                <div id="students-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Students</h2>
+                            <p class="view-header-subtitle">Manage all student records</p>
+                        </div>
+                        <button class="btn-primary" onclick="app.showModal('student-modal')">
+                            <i class="fa-solid fa-plus"></i> Add Student
+                        </button>
+                    </div>
+
+                    <div class="table-toolbar">
+                        <div class="table-toolbar-left">
+                            <div class="table-search">
+                                <i class="fa-solid fa-search"></i>
+                                <input type="text" placeholder="Search students..." id="students-search" oninput="app.filterTable('students')">
+                            </div>
+                            <select class="table-filter" id="students-filter-class" onchange="app.filterTable('students')">
+                                <option value="">All Classes</option>
+                            </select>
+                            <select class="table-filter" id="students-filter-gender" onchange="app.filterTable('students')">
+                                <option value="">All Genders</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="table-toolbar-right">
+                            <span class="table-count" id="students-count">0 students</span>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-container-inner">
+                            <table class="data-table" id="students-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID Number</th>
+                                        <th>Full Name</th>
+                                        <th>Class</th>
+                                        <th>Gender</th>
+                                        <th>Contact</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="table-pagination" id="students-pagination"></div>
+                    </div>
+                </div>
+
+                <!-- ==================== TEACHERS ==================== -->
+                <div id="teachers-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Teachers</h2>
+                            <p class="view-header-subtitle">Manage teaching staff</p>
+                        </div>
+                        <button class="btn-primary" onclick="app.showModal('teacher-modal')">
+                            <i class="fa-solid fa-plus"></i> Add Teacher
+                        </button>
+                    </div>
+
+                    <div class="table-toolbar">
+                        <div class="table-toolbar-left">
+                            <div class="table-search">
+                                <i class="fa-solid fa-search"></i>
+                                <input type="text" placeholder="Search teachers..." id="teachers-search" oninput="app.filterTable('teachers')">
+                            </div>
+                            <select class="table-filter" id="teachers-filter-subject" onchange="app.filterTable('teachers')">
+                                <option value="">All Subjects</option>
+                            </select>
+                        </div>
+                        <div class="table-toolbar-right">
+                            <span class="table-count" id="teachers-count">0 teachers</span>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-container-inner">
+                            <table class="data-table" id="teachers-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Subject</th>
+                                        <th>Phone</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="table-pagination" id="teachers-pagination"></div>
+                    </div>
+                </div>
+
+                <!-- ==================== CLASSES ==================== -->
+                <div id="classes-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Classes</h2>
+                            <p class="view-header-subtitle">Manage class structure and assignments</p>
+                        </div>
+                        <button class="btn-primary" onclick="app.showModal('class-modal')">
+                            <i class="fa-solid fa-plus"></i> Create Class
+                        </button>
+                    </div>
+
+                    <div class="table-toolbar">
+                        <div class="table-toolbar-left">
+                            <div class="table-search">
+                                <i class="fa-solid fa-search"></i>
+                                <input type="text" placeholder="Search classes..." id="classes-search" oninput="app.filterTable('classes')">
+                            </div>
+                        </div>
+                        <div class="table-toolbar-right">
+                            <span class="table-count" id="classes-count">0 classes</span>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-container-inner">
+                            <table class="data-table" id="classes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Class Name</th>
+                                        <th>Assigned Teacher</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="table-pagination" id="classes-pagination"></div>
+                    </div>
+                </div>
+
+                <!-- ==================== ATTENDANCE ==================== -->
+                <div id="attendance-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Attendance</h2>
+                            <p class="view-header-subtitle">Record and manage daily attendance</p>
+                        </div>
+                    </div>
+
+                    <div class="attendance-toolbar" style="display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center;">
+                        <label for="attendance-date"><i class="fa-regular fa-calendar"></i> Date:</label>
+                        <input type="date" id="attendance-date" style="padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-primary); background: var(--bg-input); color: var(--text-primary);">
+                        
+                        <label for="attendance-class-filter" style="margin-left: 8px;"><i class="fa-solid fa-school"></i> Class:</label>
+                        <select id="attendance-class-filter" onchange="app.loadAttendance()" style="padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-primary); background: var(--bg-input); color: var(--text-primary);">
+                            <option value="">All Classes</option>
+                        </select>
+
+                        <button class="btn-secondary" onclick="app.loadAttendance()">
+                            <i class="fa-solid fa-rotate-right"></i> Load Students
+                        </button>
+                        <button class="btn-secondary" id="mark-all-present-btn" onclick="app.markAllPresent()">
+                            <i class="fa-solid fa-check-double"></i> Mark All Present
+                        </button>
+                        <button class="btn-primary" id="save-batch-attendance-btn" onclick="app.saveBatchAttendance()">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Attendance
+                        </button>
+                        <button class="btn-secondary" id="open-class-summary-btn" onclick="app.openClassAttendanceSummaryModal()">
+                            <i class="fa-solid fa-chart-pie"></i> Class Summary
+                        </button>
+                        <span class="table-count" id="attendance-summary" style="margin-left: auto;"></span>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-container-inner">
+                            <table class="data-table" id="attendance-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student ID</th>
+                                        <th>Full Name</th>
+                                        <th>Class</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== EXAMS (P2 #2) ==================== -->
+                <div id="exams-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Exams</h2>
+                            <p class="view-header-subtitle">Manage school examinations, tests, and assessments</p>
+                        </div>
+                        <button class="btn-primary" id="add-exam-btn" onclick="app.showModal('exam-modal')">
+                            <i class="fa-solid fa-plus"></i> Add Exam
+                        </button>
+                    </div>
+                    <div class="section-card">
+                        <div class="table-controls">
+                            <select class="table-filter" id="exams-filter-year" onchange="app.onExamFilterAYChange()">
+                                <option value="">All Academic Years</option>
+                            </select>
+                            <select class="table-filter" id="exams-filter-term" onchange="app.loadExams()">
+                                <option value="">All Terms</option>
+                            </select>
+                            <select class="table-filter" id="exams-filter-class" onchange="app.onExamFilterClassChange()">
+                                <option value="">All Classes</option>
+                            </select>
+                            <select class="table-filter" id="exams-filter-subject" onchange="app.loadExams()">
+                                <option value="">All Subjects</option>
+                            </select>
+                            <select class="table-filter" id="exams-filter-type" onchange="app.loadExams()">
+                                <option value="">All Types</option>
+                                <option value="Midterm">Midterm</option>
+                                <option value="Final">Final</option>
+                                <option value="Quiz">Quiz</option>
+                                <option value="Assignment">Assignment</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <select class="table-filter" id="exams-filter-status" onchange="app.loadExams()">
+                                <option value="">All Statuses</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="exams-table">
+                                <thead>
+                                    <tr>
+                                        <th>Exam Name</th>
+                                        <th>Type</th>
+                                        <th>Academic Year</th>
+                                        <th>Term</th>
+                                        <th>Class</th>
+                                        <th>Subject</th>
+                                        <th>Date</th>
+                                        <th>Total Marks</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="exams-tbody">
+                                    <tr><td colspan="10" class="loading-cell"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== MARKS (P2 #3) ==================== -->
+                <div id="marks-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Marks</h2>
+                            <p class="view-header-subtitle">Record and manage student exam marks</p>
+                        </div>
+                        <button class="btn-primary" id="add-mark-btn" onclick="app.showModal('mark-modal')">
+                            <i class="fa-solid fa-plus"></i> Add Mark
+                        </button>
+                    </div>
+                    <div class="section-card">
+                        <div class="table-controls">
+                            <select class="table-filter" id="marks-filter-exam" onchange="app.loadMarks()">
+                                <option value="">All Exams</option>
+                            </select>
+                            <select class="table-filter" id="marks-filter-student" onchange="app.loadMarks()">
+                                <option value="">All Students</option>
+                            </select>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="marks-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>ID Number</th>
+                                        <th>Exam</th>
+                                        <th>Subject</th>
+                                        <th>Marks</th>
+                                        <th>Percentage</th>
+                                        <th>Remarks</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="marks-tbody">
+                                    <tr><td colspan="8" class="loading-cell"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== RESULTS (P2 #4) ==================== -->
+                <div id="results-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Results</h2>
+                            <p class="view-header-subtitle">Student academic performance, subject grades, and term results</p>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn-secondary" id="results-view-mode-btn" onclick="app.toggleResultsMode()">
+                                <i class="fa-solid fa-graduation-cap"></i> <span id="results-mode-label">Term Report</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filter Controls -->
+                    <div class="section-card">
+                        <div class="table-controls">
+                            <select class="table-filter" id="results-filter-student" onchange="app.onResultFilterChange()">
+                                <option value="">All Students</option>
+                            </select>
+                            <select class="table-filter" id="results-filter-year" onchange="app.onResultAYChange()">
+                                <option value="">All Academic Years</option>
+                            </select>
+                            <select class="table-filter" id="results-filter-term" onchange="app.onResultFilterChange()">
+                                <option value="">All Terms</option>
+                            </select>
+                            <select class="table-filter" id="results-filter-class" onchange="app.onResultClassChange()">
+                                <option value="">All Classes</option>
+                            </select>
+                            <select class="table-filter" id="results-filter-subject" onchange="app.onResultFilterChange()">
+                                <option value="">All Subjects</option>
+                            </select>
+                            <select class="table-filter" id="results-filter-exam" onchange="app.onResultFilterChange()">
+                                <option value="">All Exams</option>
+                            </select>
+                        </div>
+
+                        <!-- EXAM RESULTS TABLE VIEW -->
+                        <div id="results-table-container" class="table-wrapper">
+                            <table class="data-table" id="results-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Subject</th>
+                                        <th>Exam</th>
+                                        <th>Marks</th>
+                                        <th>Total</th>
+                                        <th>Percentage</th>
+                                        <th>Grade</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="results-tbody">
+                                    <tr><td colspan="8" class="loading-cell"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- TERM REPORT VIEW -->
+                        <div id="results-term-container" class="hidden" style="margin-top: var(--space-4);">
+                            <div id="results-term-header" style="background:var(--bg-elevated);padding:var(--space-4) var(--space-5);border-radius:var(--radius-md);margin-bottom:var(--space-4);border:1px solid var(--border-primary);">
+                                <h3 id="term-report-student-name" style="margin:0 0 6px 0;">Select a Student & Term</h3>
+                                <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;color:var(--text-secondary);font-size:var(--text-sm);">
+                                    <span><strong>Academic Year:</strong> <span id="term-report-ay">—</span></span>
+                                    <span><strong>Term:</strong> <span id="term-report-term">—</span></span>
+                                    <span><strong>ID Number:</strong> <span id="term-report-id-number">—</span></span>
+                                    <span><strong>Class:</strong> <span id="term-report-class">—</span></span>
+                                </div>
+                            </div>
+
+                            <div class="table-wrapper">
+                                <table class="data-table" id="results-term-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Marks</th>
+                                            <th>Total</th>
+                                            <th>Percentage</th>
+                                            <th>Grade</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="results-term-tbody">
+                                        <tr><td colspan="6" class="empty-cell">Please select both a student and a term from the filters to view the term result report.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Term Report Summary Cards -->
+                            <div class="stats-grid" id="results-term-stats" style="margin-top:var(--space-5);">
+                                <div class="stat-card">
+                                    <div class="stat-icon bg-blue"><i class="fa-solid fa-calculator"></i></div>
+                                    <div class="stat-details">
+                                        <h3>Total Marks</h3>
+                                        <div class="stat-value" id="term-stat-marks">0 / 0</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon bg-purple"><i class="fa-solid fa-percent"></i></div>
+                                    <div class="stat-details">
+                                        <h3>Overall Percentage</h3>
+                                        <div class="stat-value" id="term-stat-percentage">0%</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon bg-green"><i class="fa-solid fa-award"></i></div>
+                                    <div class="stat-details">
+                                        <h3>Passed Subjects</h3>
+                                        <div class="stat-value" id="term-stat-passed">0</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon bg-orange"><i class="fa-solid fa-circle-xmark"></i></div>
+                                    <div class="stat-details">
+                                        <h3>Failed Subjects</h3>
+                                        <div class="stat-value" id="term-stat-failed">0</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon bg-neutral"><i class="fa-solid fa-flag"></i></div>
+                                    <div class="stat-details">
+                                        <h3>Overall Status</h3>
+                                        <div class="stat-value" id="term-stat-status">—</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== REPORTS MANAGEMENT (P2 #5) ==================== -->
+                <div id="reports-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Reports Management</h2>
+                            <p class="view-header-subtitle">Dynamic academic performance reports for students, classes, terms, and exams</p>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn-secondary" id="reports-print-btn" onclick="window.print()">
+                                <i class="fa-solid fa-print"></i> <span>Print Report</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filter & Selection Controls -->
+                    <div class="section-card">
+                        <div style="display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center;margin-bottom:var(--space-4);">
+                            <div style="flex:1 1 200px;min-width:180px;">
+                                <label style="display:block;font-size:var(--text-xs);font-weight:600;color:var(--text-secondary);margin-bottom:4px;">REPORT TYPE</label>
+                                <select class="table-filter" id="reports-type-select" onchange="app.onReportTypeChange()" style="width:100%;font-weight:600;">
+                                    <option value="student">1. Student Academic Report</option>
+                                    <option value="class">2. Class Performance Report</option>
+                                    <option value="term">3. Term Summary Report</option>
+                                    <option value="exam">4. Exam Analysis Report</option>
+                                </select>
+                            </div>
+
+                            <div style="flex:1 1 180px;min-width:160px;" id="reports-group-year">
+                                <label style="display:block;font-size:var(--text-xs);font-weight:600;color:var(--text-secondary);margin-bottom:4px;">ACADEMIC YEAR</label>
+                                <select class="table-filter" id="reports-filter-year" onchange="app.onReportAYChange()" style="width:100%;">
+                                    <option value="">All Academic Years</option>
+                                </select>
+                            </div>
+
+                            <div style="flex:1 1 180px;min-width:160px;" id="reports-group-term">
+                                <label style="display:block;font-size:var(--text-xs);font-weight:600;color:var(--text-secondary);margin-bottom:4px;">TERM</label>
+                                <select class="table-filter" id="reports-filter-term" style="width:100%;">
+                                    <option value="">All Terms</option>
+                                </select>
+                            </div>
+
+                            <div style="flex:1 1 180px;min-width:160px;" id="reports-group-class">
+                                <label style="display:block;font-size:var(--text-xs);font-weight:600;color:var(--text-secondary);margin-bottom:4px;">CLASS</label>
+                                <select class="table-filter" id="reports-filter-class" onchange="app.onReportClassChange()" style="width:100%;">
+                                    <option value="">All Classes</option>
+                                </select>
+                            </div>
+
+                            <div style="flex:1 1 200px;min-width:180px;" id="reports-group-student">
+                                <label style="display:block;font-size:var(--text-xs);font-weight:600;color:var(--text-secondary);margin-bottom:4px;">STUDENT *</label>
+                                <select class="table-filter" id="reports-filter-student" style="width:100%;">
+                                    <option value="">Select Student</option>
+                                </select>
+                            </div>
+
+                            <div style="flex:1 1 180px;min-width:160px;" id="reports-group-subject">
+                                <label style="display:block;font-size:var(--text-xs);font-weight:600;color:var(--text-secondary);margin-bottom:4px;">SUBJECT</label>
+                                <select class="table-filter" id="reports-filter-subject" style="width:100%;">
+                                    <option value="">All Subjects</option>
+                                </select>
+                            </div>
+
+                            <div style="flex:1 1 200px;min-width:180px;" id="reports-group-exam">
+                                <label style="display:block;font-size:var(--text-xs);font-weight:600;color:var(--text-secondary);margin-bottom:4px;">EXAM *</label>
+                                <select class="table-filter" id="reports-filter-exam" style="width:100%;">
+                                    <option value="">Select Exam</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:var(--space-3);align-items:center;">
+                            <button class="btn-primary" id="reports-generate-btn" onclick="app.generateReport()">
+                                <i class="fa-solid fa-chart-pie"></i> Generate Report
+                            </button>
+                            <button class="btn-secondary" id="reports-reset-btn" onclick="app.resetReportFilters()">
+                                <i class="fa-solid fa-rotate-left"></i> Reset Filters
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Report Display Container -->
+                    <div class="section-card" id="reports-output-card" style="margin-top:var(--space-4);">
+                        <div id="reports-empty-state" class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="fa-solid fa-file-chart-column"></i>
+                            </div>
+                            <h3>Academic Reports Generator</h3>
+                            <p>Select a report type and desired filters above, then click <strong>Generate Report</strong> to view comprehensive academic analysis.</p>
+                        </div>
+
+                        <div id="reports-loading-state" class="loading-cell hidden" style="padding:var(--space-8);text-align:center;">
+                            <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                            <p style="margin-top:var(--space-3);color:var(--text-secondary);">Calculating and generating academic report...</p>
+                        </div>
+
+                        <div id="reports-content-container" class="hidden"></div>
+                    </div>
+                </div>
+
+                <!-- ==================== SETTINGS (P3) ==================== -->
+                <div id="settings-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">School Profile & Settings</h2>
+                            <p class="view-header-subtitle">Manage institutional identity, contact info, and operational thresholds</p>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-grid">
+                        <div class="section-card">
+                            <h3 style="font-size: var(--text-md); margin-bottom: var(--space-4); color: var(--text-primary);">
+                                <i class="fa-solid fa-school" style="margin-right: 8px;"></i> School Profile Information
+                            </h3>
+                            <form id="settings-form" onsubmit="app.saveSettings(event)">
+                                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+                                    <div class="form-group">
+                                        <label for="setting-school-name">School Name <span class="required">*</span></label>
+                                        <input type="text" id="setting-school-name" placeholder="e.g. Doolaal Academy" required maxlength="120" oninput="app.updateSchoolPreview()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="setting-motto">Motto</label>
+                                        <input type="text" id="setting-motto" placeholder="e.g. Excellence in Education" maxlength="200" oninput="app.updateSchoolPreview()">
+                                    </div>
+                                </div>
+
+                                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+                                    <div class="form-group">
+                                        <label for="setting-official-email">Official Email</label>
+                                        <input type="email" id="setting-official-email" placeholder="e.g. info@doolaal.edu" oninput="app.updateSchoolPreview()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="setting-phone">Phone Number</label>
+                                        <input type="text" id="setting-phone" placeholder="e.g. +252 61 5000000" oninput="app.updateSchoolPreview()">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="setting-address">School Address</label>
+                                    <input type="text" id="setting-address" placeholder="e.g. KM4, Mogadishu, Somalia" maxlength="250" oninput="app.updateSchoolPreview()">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="setting-logo-url">Logo Image URL</label>
+                                    <input type="url" id="setting-logo-url" placeholder="https://example.com/logo.png" oninput="app.updateSchoolPreview()">
+                                </div>
+
+                                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-2);">
+                                    <div class="form-group">
+                                        <label for="setting-min-attendance">Minimum Attendance Target (%)</label>
+                                        <input type="number" id="setting-min-attendance" min="0" max="100" placeholder="75">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="setting-default-ay">Default Academic Year</label>
+                                        <select id="setting-default-ay">
+                                            <option value="">Auto (Active Academic Year)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: var(--space-5); display: flex; justify-content: flex-end;">
+                                    <button type="submit" class="btn-primary" id="save-settings-btn">
+                                        <i class="fa-solid fa-floppy-disk"></i> Save School Settings
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="school-preview-card">
+                            <div class="school-preview-logo" id="preview-logo-container">
+                                <i class="fa-solid fa-graduation-cap" id="preview-logo-icon"></i>
+                                <img id="preview-logo-img" src="" alt="School Logo" style="display: none; width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                            </div>
+                            <h3 id="preview-school-name" style="font-size: var(--text-md); margin-bottom: 4px; color: var(--text-primary);">DOOLAAL SCHOOL</h3>
+                            <p id="preview-motto" style="font-size: var(--text-xs); color: var(--text-muted); font-style: italic; margin-bottom: var(--space-3);">Knowledge, Integrity, Excellence</p>
+                            <div style="font-size: var(--text-xs); color: var(--text-secondary); line-height: 1.6; border-top: 1px solid var(--border-primary); padding-top: var(--space-3); text-align: left;">
+                                <div id="preview-email"><i class="fa-solid fa-envelope" style="width: 16px;"></i> <span id="preview-email-val">info@doolaal.edu</span></div>
+                                <div id="preview-phone"><i class="fa-solid fa-phone" style="width: 16px;"></i> <span id="preview-phone-val">+252 61 0000000</span></div>
+                                <div id="preview-address"><i class="fa-solid fa-location-dot" style="width: 16px;"></i> <span id="preview-address-val">Mogadishu, Somalia</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== TIMETABLE (P3) ==================== -->
+                <div id="timetable-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Timetable & Schedule</h2>
+                            <p class="view-header-subtitle">Manage weekly class periods, teacher assignments, and classroom schedule</p>
+                        </div>
+                        <button class="btn-primary" id="add-timetable-slot-btn" onclick="app.showModal('timetable-modal')">
+                            <i class="fa-solid fa-plus"></i> Add Timetable Slot
+                        </button>
+                    </div>
+
+                    <div class="table-toolbar" style="margin-bottom: var(--space-4); display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center;">
+                        <label for="timetable-class-filter" style="font-size: var(--text-sm); font-weight: 500;">Class:</label>
+                        <select id="timetable-class-filter" onchange="app.loadTimetable()" style="padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-primary); background: var(--bg-input); color: var(--text-primary);">
+                            <option value="">All Classes</option>
+                        </select>
+
+                        <label for="timetable-day-filter" style="font-size: var(--text-sm); font-weight: 500; margin-left: var(--space-2);">Day:</label>
+                        <select id="timetable-day-filter" onchange="app.loadTimetable()" style="padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-primary); background: var(--bg-input); color: var(--text-primary);">
+                            <option value="">All Days</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+
+                        <button class="btn-secondary" onclick="app.loadTimetable()">
+                            <i class="fa-solid fa-rotate-right"></i> Refresh
+                        </button>
+                    </div>
+
+                    <div id="timetable-container" class="timetable-grid"></div>
+                </div>
+
+                <!-- ==================== NOTICE BOARD (P3) ==================== -->
+                <div id="notices-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Notice Board & Announcements</h2>
+                            <p class="view-header-subtitle">School-wide notices, urgent bulletins, and role-targeted announcements</p>
+                        </div>
+                        <button class="btn-primary" id="add-notice-btn" onclick="app.showModal('notice-modal')">
+                            <i class="fa-solid fa-bullhorn"></i> Publish Notice
+                        </button>
+                    </div>
+
+                    <div class="table-toolbar" style="margin-bottom: var(--space-4); display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center;">
+                        <label for="notices-priority-filter" style="font-size: var(--text-sm); font-weight: 500;">Priority:</label>
+                        <select id="notices-priority-filter" onchange="app.loadNotices()" style="padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-primary); background: var(--bg-input); color: var(--text-primary);">
+                            <option value="">All Priorities</option>
+                            <option value="urgent">Urgent Only</option>
+                            <option value="normal">Normal</option>
+                        </select>
+
+                        <label for="notices-status-filter" id="notices-status-filter-label" style="font-size: var(--text-sm); font-weight: 500; margin-left: var(--space-2);">Status:</label>
+                        <select id="notices-status-filter" onchange="app.loadNotices()" style="padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-primary); background: var(--bg-input); color: var(--text-primary);">
+                            <option value="active">Active Notices</option>
+                            <option value="archived">Archived Notices</option>
+                        </select>
+
+                        <button class="btn-secondary" onclick="app.loadNotices()">
+                            <i class="fa-solid fa-rotate-right"></i> Refresh
+                        </button>
+                    </div>
+
+                    <div id="notices-container" class="notices-grid"></div>
+                </div>
+
+                <!-- ============================================================
+                     ACADEMIC FOUNDATION VIEWS (P2 #1)
+                     ============================================================ -->
+
+                <!-- Academic Years View -->
+                <div id="academic-years-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Academic Years</h2>
+                            <p class="view-header-subtitle">Manage school academic years</p>
+                        </div>
+                        <button class="btn-primary" id="add-academic-year-btn" onclick="app.showModal('academic-year-modal')">
+                            <i class="fa-solid fa-plus"></i> Add Academic Year
+                        </button>
+                    </div>
+                    <div class="section-card">
+                        <div class="table-controls">
+                            <select class="table-filter" id="academic-years-filter-status" onchange="app.loadAcademicYears()">
+                                <option value="">All Statuses</option>
+                                <option value="active">Active</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="academic-years-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="academic-years-tbody">
+                                    <tr><td colspan="5" class="loading-cell"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terms View -->
+                <div id="terms-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Terms</h2>
+                            <p class="view-header-subtitle">Manage academic terms within a year</p>
+                        </div>
+                        <button class="btn-primary" id="add-term-btn" onclick="app.showModal('term-modal')">
+                            <i class="fa-solid fa-plus"></i> Add Term
+                        </button>
+                    </div>
+                    <div class="section-card">
+                        <div class="table-controls">
+                            <select class="table-filter" id="terms-filter-year" onchange="app.loadTerms()">
+                                <option value="">All Academic Years</option>
+                            </select>
+                            <select class="table-filter" id="terms-filter-status" onchange="app.loadTerms()">
+                                <option value="">All Statuses</option>
+                                <option value="active">Active</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="terms-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Academic Year</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="terms-tbody">
+                                    <tr><td colspan="6" class="loading-cell"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subjects View -->
+                <div id="subjects-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Subjects</h2>
+                            <p class="view-header-subtitle">Manage school subjects and their codes</p>
+                        </div>
+                        <button class="btn-primary" id="add-subject-btn" onclick="app.showModal('subject-modal')">
+                            <i class="fa-solid fa-plus"></i> Add Subject
+                        </button>
+                    </div>
+                    <div class="section-card">
+                        <div class="table-controls">
+                            <select class="table-filter" id="subjects-filter-status" onchange="app.loadSubjects()">
+                                <option value="">All Statuses</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="subjects-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Code</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subjects-tbody">
+                                    <tr><td colspan="4" class="loading-cell"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Class Subjects View -->
+                <div id="class-subjects-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">Class Subject Assignments</h2>
+                            <p class="view-header-subtitle">Assign subjects and teachers to classes per academic year</p>
+                        </div>
+                        <button class="btn-primary" id="add-class-subject-btn" onclick="app.showModal('class-subject-modal')">
+                            <i class="fa-solid fa-plus"></i> Assign Subject
+                        </button>
+                    </div>
+                    <div class="section-card">
+                        <div class="table-controls">
+                            <select class="table-filter" id="cs-filter-year" onchange="app.loadClassSubjects()">
+                                <option value="">All Academic Years</option>
+                            </select>
+                            <select class="table-filter" id="cs-filter-class" onchange="app.loadClassSubjects()">
+                                <option value="">All Classes</option>
+                            </select>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="class-subjects-table">
+                                <thead>
+                                    <tr>
+                                        <th>Class</th>
+                                        <th>Subject</th>
+                                        <th>Code</th>
+                                        <th>Academic Year</th>
+                                        <th>Teacher</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="class-subjects-tbody">
+                                    <tr><td colspan="7" class="loading-cell"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <!-- ==================== USERS (P2 #6) ==================== -->
+                <div id="users-view" class="view-content hidden">
+                    <div class="view-header">
+                        <div>
+                            <h2 class="view-header-title">User Management</h2>
+                            <p class="view-header-subtitle">Manage system users, roles, account status, and linkages</p>
+                        </div>
+                        <button class="btn-primary" id="add-user-btn" onclick="app.openUserModal()">
+                            <i class="fa-solid fa-user-plus"></i> Add User
+                        </button>
+                    </div>
+
+                    <div class="table-toolbar">
+                        <div class="table-toolbar-left">
+                            <div class="table-search">
+                                <i class="fa-solid fa-search"></i>
+                                <input type="text" placeholder="Search username or email..." id="users-search" oninput="app.filterUsers()">
+                            </div>
+                            <select class="table-filter" id="users-filter-role" onchange="app.filterUsers()">
+                                <option value="">All Roles</option>
+                                <option value="admin">Admin</option>
+                                <option value="teacher">Teacher</option>
+                                <option value="student">Student</option>
+                            </select>
+                            <select class="table-filter" id="users-filter-status" onchange="app.filterUsers()">
+                                <option value="">All Statuses</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="table-toolbar-right">
+                            <span class="table-count" id="users-count">0 users</span>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-container-inner">
+                            <table class="data-table" id="users-table">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Linked Entity</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-tbody">
+                                    <tr><td colspan="7" class="loading-cell"><i class="fa-solid fa-spinner fa-spin"></i> Loading users...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-pagination" id="users-pagination"></div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ============================================================
+         MODALS
+         ============================================================ -->
+
+    <!-- Student Modal -->
+    <div id="student-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" onclick="app.closeModal('student-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2 id="student-modal-title">Add New Student</h2>
+            <form id="student-form">
+                <input type="hidden" id="student-id">
+                <div class="form-group">
+                    <label for="student-id-num">ID Number <span class="required">*</span></label>
+                    <input type="text" id="student-id-num" placeholder="e.g. STU-001" required>
+                </div>
+                <div class="form-group">
+                    <label for="student-name">Full Name <span class="required">*</span></label>
+                    <input type="text" id="student-name" placeholder="Enter full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="student-class">Class <span class="required">*</span></label>
+                    <select id="student-class" required>
+                        <option value="">Select a Class</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="student-gender">Gender <span class="required">*</span></label>
+                    <select id="student-gender" required>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="student-contact">Contact Phone <span class="required">*</span></label>
+                    <input type="text" id="student-contact" placeholder="Enter phone number" required>
+                </div>
+                <button type="submit" class="btn-primary w-100" id="student-submit-btn">
+                    <i class="fa-solid fa-save"></i> Save Student
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Teacher Modal -->
+    <div id="teacher-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" onclick="app.closeModal('teacher-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2 id="teacher-modal-title">Add New Teacher</h2>
+            <form id="teacher-form">
+                <input type="hidden" id="teacher-id">
+                <div class="form-group">
+                    <label for="teacher-name">Name <span class="required">*</span></label>
+                    <input type="text" id="teacher-name" placeholder="Enter teacher name" required>
+                </div>
+                <div class="form-group">
+                    <label for="teacher-subject">Subject <span class="required">*</span></label>
+                    <input type="text" id="teacher-subject" placeholder="Enter subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="teacher-phone">Phone <span class="required">*</span></label>
+                    <input type="text" id="teacher-phone" placeholder="Enter phone number" required>
+                </div>
+                <button type="submit" class="btn-primary w-100" id="teacher-submit-btn">
+                    <i class="fa-solid fa-save"></i> Save Teacher
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Class Modal -->
+    <div id="class-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" onclick="app.closeModal('class-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2 id="class-modal-title">Create Class</h2>
+            <form id="class-form">
+                <input type="hidden" id="class-id">
+                <div class="form-group">
+                    <label for="class-name">Class Name <span class="required">*</span></label>
+                    <input type="text" id="class-name" placeholder="e.g. Grade 10-A" required>
+                </div>
+                <div class="form-group">
+                    <label for="class-teacher">Assign Teacher <span class="required">*</span></label>
+                    <select id="class-teacher" required>
+                        <option value="">Select a Teacher</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary w-100" id="class-submit-btn">
+                    <i class="fa-solid fa-save"></i> Save Class
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Dialog Modal -->
+    <div id="confirm-modal" class="modal hidden">
+        <div class="modal-content confirm-dialog">
+            <div class="confirm-icon">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <h3 id="confirm-title">Are you sure?</h3>
+            <p id="confirm-message">This action cannot be undone.</p>
+            <div class="confirm-actions">
+                <button class="btn-secondary" onclick="app.cancelConfirm()">Cancel</button>
+                <button class="btn-danger" id="confirm-action-btn" onclick="app.executeConfirm()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         ACADEMIC FOUNDATION MODALS (P2 #1)
+         ============================================================ -->
+
+    <!-- Academic Year Modal -->
+    <div id="academic-year-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" onclick="app.closeModal('academic-year-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2 id="academic-year-modal-title">Add Academic Year</h2>
+            <form id="academic-year-form">
+                <input type="hidden" id="academic-year-id">
+                <div class="form-group">
+                    <label for="academic-year-name">Name <span class="required">*</span></label>
+                    <input type="text" id="academic-year-name" placeholder="e.g. 2024-2025" required>
+                </div>
+                <div class="form-group">
+                    <label for="academic-year-start">Start Date <span class="required">*</span></label>
+                    <input type="date" id="academic-year-start" required>
+                </div>
+                <div class="form-group">
+                    <label for="academic-year-end">End Date <span class="required">*</span></label>
+                    <input type="date" id="academic-year-end" required>
+                </div>
+                <div class="form-group">
+                    <label for="academic-year-status">Status</label>
+                    <select id="academic-year-status">
+                        <option value="active">Active</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary w-100" id="academic-year-submit-btn">
+                    <i class="fa-solid fa-save"></i> Save Academic Year
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Term Modal -->
+    <div id="term-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" onclick="app.closeModal('term-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2 id="term-modal-title">Add Term</h2>
+            <form id="term-form">
+                <input type="hidden" id="term-id">
+                <div class="form-group">
+                    <label for="term-name">Term Name <span class="required">*</span></label>
+                    <input type="text" id="term-name" placeholder="e.g. Term 1" required>
+                </div>
+                <div class="form-group">
+                    <label for="term-academic-year">Academic Year <span class="required">*</span></label>
+                    <select id="term-academic-year" required>
+                        <option value="">Select Academic Year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="term-start">Start Date <span class="required">*</span></label>
+                    <input type="date" id="term-start" required>
+                </div>
+                <div class="form-group">
+                    <label for="term-end">End Date <span class="required">*</span></label>
+                    <input type="date" id="term-end" required>
+                </div>
+                <div class="form-group">
+                    <label for="term-status">Status</label>
+                    <select id="term-status">
+                        <option value="active">Active</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary w-100" id="term-submit-btn">
+                    <i class="fa-solid fa-save"></i> Save Term
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Subject Modal -->
+    <div id="subject-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" onclick="app.closeModal('subject-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2 id="subject-modal-title">Add Subject</h2>
+            <form id="subject-form">
+                <input type="hidden" id="subject-id">
+                <div class="form-group">
+                    <label for="subject-name">Subject Name <span class="required">*</span></label>
+                    <input type="text" id="subject-name" placeholder="e.g. Mathematics" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject-code">Subject Code <span class="required">*</span></label>
+                    <input type="text" id="subject-code" placeholder="e.g. MATH101" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject-status">Status</label>
+                    <select id="subject-status">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary w-100" id="subject-submit-btn">
+                    <i class="fa-solid fa-save"></i> Save Subject
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Class Subject Modal -->
+    <div id="class-subject-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" onclick="app.closeModal('class-subject-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2 id="class-subject-modal-title">Assign Subject to Class</h2>
+            <form id="class-subject-form">
+                <input type="hidden" id="class-subject-id">
+                <div class="form-group">
+                    <label for="cs-class">Class <span class="required">*</span></label>
+                    <select id="cs-class" required>
+                        <option value="">Select a Class</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cs-subject">Subject <span class="required">*</span></label>
+                    <select id="cs-subject" required>
+                        <option value="">Select a Subject</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cs-academic-year">Academic Year <span class="required">*</span></label>
+                    <select id="cs-academic-year" required>
+                        <option value="">Select Academic Year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cs-teacher">Teacher (optional)</label>
+                    <select id="cs-teacher">
+                        <option value="">No Teacher Assigned</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cs-status">Status</label>
+                    <select id="cs-status">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary w-100" id="class-subject-submit-btn">
+                    <i class="fa-solid fa-save"></i> Save Assignment
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Exam Modal (P2 #2) -->
+    <div id="exam-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" onclick="app.closeModal('exam-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2 id="exam-modal-title">Add Exam</h2>
+            <form id="exam-form">
+                <input type="hidden" id="exam-id">
+                <div class="form-group">
+                    <label for="exam-name">Exam Name <span class="required">*</span></label>
+                    <input type="text" id="exam-name" placeholder="e.g. Midterm 1, Final Exam" required maxlength="100">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="exam-type">Exam Type <span class="required">*</span></label>
+                        <select id="exam-type" required>
+                            <option value="Midterm">Midterm</option>
+                            <option value="Final">Final</option>
+                            <option value="Quiz">Quiz</option>
+                            <option value="Assignment">Assignment</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exam-status">Status</label>
+                        <select id="exam-status">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="exam-academic-year">Academic Year <span class="required">*</span></label>
+                        <select id="exam-academic-year" required onchange="app.onExamAYChange()">
+                            <option value="">Select Academic Year</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exam-term">Term <span class="required">*</span></label>
+                        <select id="exam-term" required>
+                            <option value="">Select Term</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="exam-class">Class <span class="required">*</span></label>
+                        <select id="exam-class" required onchange="app.onExamClassChange()">
+                            <option value="">Select Class</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exam-subject">Subject <span class="required">*</span></label>
+                        <select id="exam-subject" required>
+                            <option value="">Select Subject</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="exam-date">Exam Date <span class="required">*</span></label>
+                        <input type="date" id="exam-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exam-total-marks">Total Marks <span class="required">*</span></label>
+                        <input type="number" id="exam-total-marks" required min="1" max="1000" placeholder="100">
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary w-100" id="exam-submit-btn">
+                    <i class="fa-solid fa-save"></i> Save Exam
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mark Modal (P2 #3) -->
+    <div id="mark-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" onclick="app.closeModal('mark-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2 id="mark-modal-title">Add Mark</h2>
+            <form id="mark-form">
+                <input type="hidden" id="mark-id">
+                <div class="form-group">
+                    <label for="mark-exam">Exam <span class="required">*</span></label>
+                    <select id="mark-exam" required>
+                        <option value="">Select Exam</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="mark-student">Student <span class="required">*</span></label>
+                    <select id="mark-student" required>
+                        <option value="">Select Student</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="mark-obtained">Marks Obtained <span class="required">*</span></label>
+                        <input type="number" id="mark-obtained" required min="0" max="10000" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="mark-total" style="color:var(--text-secondary)">Exam Total</label>
+                        <input type="text" id="mark-total" disabled placeholder="—" style="background:var(--bg-secondary);cursor:not-allowed">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="mark-remarks">Remarks</label>
+                    <input type="text" id="mark-remarks" placeholder="Optional remarks" maxlength="500">
+                </div>
+                <button type="submit" class="btn-primary w-100" id="mark-submit-btn">
+                    <i class="fa-solid fa-save"></i> Save Mark
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Modal (P2 #6) -->
+    <div id="user-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" onclick="app.closeModal('user-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2 id="user-modal-title">Add User</h2>
+            <form id="user-form">
+                <input type="hidden" id="user-id">
+                <div class="form-group">
+                    <label for="user-username">Username <span class="required">*</span></label>
+                    <input type="text" id="user-username" placeholder="e.g. jdoe or teacher_john" required maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label for="user-email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="user-email" placeholder="e.g. user@school.com" required maxlength="254">
+                </div>
+                <div class="form-group">
+                    <label for="user-role">Role <span class="required">*</span></label>
+                    <select id="user-role" required onchange="app.onUserRoleChange()">
+                        <option value="student">Student</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                <div class="form-group" id="user-student-group">
+                    <label for="user-student">Link Student Record</label>
+                    <select id="user-student">
+                        <option value="">No Student Linked</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="user-teacher-group">
+                    <label for="user-teacher">Link Teacher Record</label>
+                    <select id="user-teacher">
+                        <option value="">No Teacher Linked</option>
+                    </select>
+                </div>
+                <div class="form-group" id="user-password-group">
+                    <label for="user-password" id="user-password-label">Password <span class="required" id="user-password-req">*</span></label>
+                    <input type="password" id="user-password" placeholder="Minimum 6 characters" minlength="6" maxlength="100">
+                    <small id="user-password-hint" class="text-muted" style="display:none; font-size:var(--text-xs); margin-top:4px;">Leave blank to preserve existing password</small>
+                </div>
+                <div class="form-group">
+                    <label for="user-status">Account Status <span class="required">*</span></label>
+                    <select id="user-status" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary w-100" id="user-submit-btn">
+                    <i class="fa-solid fa-save"></i> Save User
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reset Password Modal (P2 #6) -->
+    <div id="reset-password-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" onclick="app.closeModal('reset-password-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2>Reset User Password</h2>
+            <div style="background:var(--bg-elevated);border:1px solid var(--border-primary);border-radius:var(--radius-sm);padding:var(--space-3);margin-bottom:var(--space-4);font-size:var(--text-sm);">
+                Resetting password for: <strong id="reset-user-display-name">—</strong>
+            </div>
+            <form id="reset-password-form">
+                <input type="hidden" id="reset-user-id">
+                <div class="form-group">
+                    <label for="reset-new-password">New Password <span class="required">*</span></label>
+                    <input type="password" id="reset-new-password" placeholder="Minimum 6 characters" required minlength="6" maxlength="100">
+                </div>
+                <div class="form-group">
+                    <label for="reset-confirm-password">Confirm Password <span class="required">*</span></label>
+                    <input type="password" id="reset-confirm-password" placeholder="Repeat new password" required minlength="6" maxlength="100">
+                </div>
+                <button type="submit" class="btn-primary w-100" id="reset-password-submit-btn">
+                    <i class="fa-solid fa-key"></i> Reset Password
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Student Attendance History Modal (P3) -->
+    <div id="student-attendance-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-modal" onclick="app.closeModal('student-attendance-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2 id="student-att-modal-title">Student Attendance History</h2>
+            <div id="student-att-stats-card" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 16px 0; text-align: center;">
+                <div style="background: var(--bg-elevated); padding: 10px; border-radius: var(--radius-sm);">
+                    <div style="font-size: var(--text-xs); color: var(--text-secondary);">Rate</div>
+                    <div id="student-att-rate" style="font-size: var(--text-lg); font-weight: 700; color: var(--success);">--%</div>
+                </div>
+                <div style="background: var(--bg-elevated); padding: 10px; border-radius: var(--radius-sm);">
+                    <div style="font-size: var(--text-xs); color: var(--text-secondary);">Present</div>
+                    <div id="student-att-present" style="font-size: var(--text-lg); font-weight: 700; color: var(--success);">0</div>
+                </div>
+                <div style="background: var(--bg-elevated); padding: 10px; border-radius: var(--radius-sm);">
+                    <div style="font-size: var(--text-xs); color: var(--text-secondary);">Late</div>
+                    <div id="student-att-late" style="font-size: var(--text-lg); font-weight: 700; color: var(--warning);">0</div>
+                </div>
+                <div style="background: var(--bg-elevated); padding: 10px; border-radius: var(--radius-sm);">
+                    <div style="font-size: var(--text-xs); color: var(--text-secondary);">Absent</div>
+                    <div id="student-att-absent" style="font-size: var(--text-lg); font-weight: 700; color: var(--danger);">0</div>
+                </div>
+            </div>
+            <div style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-primary); border-radius: var(--radius-sm);">
+                <table class="data-table" id="student-att-records-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Class Attendance Date-Range Summary Modal (P3) -->
+    <div id="class-attendance-summary-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 750px;">
+            <span class="close-modal" onclick="app.closeModal('class-attendance-summary-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2>Class Attendance Summary</h2>
+            <div style="display: flex; gap: 12px; margin: 16px 0; align-items: flex-end; flex-wrap: wrap;">
+                <div>
+                    <label style="font-size: var(--text-xs);">Class</label>
+                    <select id="summary-modal-class-select" style="padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-primary); background: var(--bg-input); color: var(--text-primary);"></select>
+                </div>
+                <div>
+                    <label style="font-size: var(--text-xs);">Start Date</label>
+                    <input type="date" id="summary-modal-start-date" style="padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-primary); background: var(--bg-input); color: var(--text-primary);">
+                </div>
+                <div>
+                    <label style="font-size: var(--text-xs);">End Date</label>
+                    <input type="date" id="summary-modal-end-date" style="padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-primary); background: var(--bg-input); color: var(--text-primary);">
+                </div>
+                <button class="btn-primary" onclick="app.loadClassAttendanceSummaryReport()">
+                    <i class="fa-solid fa-filter"></i> Generate Summary
+                </button>
+            </div>
+            <div id="class-summary-stats-banner" style="background: var(--bg-elevated); padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 16px; display: flex; justify-content: space-between;">
+                <div>Average Rate: <strong id="class-summary-avg-rate" style="color: var(--success); font-size: var(--text-md);">--%</strong></div>
+                <div>Total Students: <strong id="class-summary-student-count">0</strong></div>
+                <div>School Days Recorded: <strong id="class-summary-days-count">0</strong></div>
+            </div>
+            <div style="max-height: 320px; overflow-y: auto; border: 1px solid var(--border-primary); border-radius: var(--radius-sm);">
+                <table class="data-table" id="class-summary-report-table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Student Name</th>
+                            <th>Present</th>
+                            <th>Late</th>
+                            <th>Absent</th>
+                            <th>Excused</th>
+                            <th>Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timetable Slot Modal (P3) -->
+    <div id="timetable-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 550px;">
+            <span class="close-modal" onclick="app.closeModal('timetable-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2 id="timetable-modal-title">Add Timetable Slot</h2>
+            <div id="timetable-conflict-alert" class="hidden" style="background: var(--danger-bg); border: 1px solid var(--danger-border); color: var(--danger); padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 14px; font-size: var(--text-sm);"></div>
+            <form id="timetable-form" onsubmit="app.saveTimetableSlot(event)">
+                <input type="hidden" id="timetable-slot-id">
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+                    <div class="form-group">
+                        <label for="slot-class-id">Class <span class="required">*</span></label>
+                        <select id="slot-class-id" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="slot-subject-id">Subject <span class="required">*</span></label>
+                        <select id="slot-subject-id" required></select>
+                    </div>
+                </div>
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+                    <div class="form-group">
+                        <label for="slot-teacher-id">Teacher <span class="required">*</span></label>
+                        <select id="slot-teacher-id" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="slot-day-of-week">Day of Week <span class="required">*</span></label>
+                        <select id="slot-day-of-week" required>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+                    <div class="form-group">
+                        <label for="slot-start-time">Start Time (24h) <span class="required">*</span></label>
+                        <input type="time" id="slot-start-time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="slot-end-time">End Time (24h) <span class="required">*</span></label>
+                        <input type="time" id="slot-end-time" required>
+                    </div>
+                </div>
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+                    <div class="form-group">
+                        <label for="slot-room-number">Room / Location</label>
+                        <input type="text" id="slot-room-number" placeholder="e.g. Room 101, Lab A" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="slot-ay-id">Academic Year</label>
+                        <select id="slot-ay-id"></select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary w-100" id="timetable-submit-btn" style="margin-top: 10px;">
+                    <i class="fa-solid fa-save"></i> Save Schedule Slot
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notice Modal (P3) -->
+    <div id="notice-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 550px;">
+            <span class="close-modal" onclick="app.closeModal('notice-modal')" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <h2 id="notice-modal-title">Publish Notice</h2>
+            <form id="notice-form" onsubmit="app.saveNotice(event)">
+                <input type="hidden" id="notice-id">
+                <div class="form-group">
+                    <label for="notice-title">Notice Title <span class="required">*</span></label>
+                    <input type="text" id="notice-title" placeholder="e.g. Midterm Examination Schedule Announcement" required maxlength="150">
+                </div>
+                <div class="form-group">
+                    <label for="notice-content">Content / Message <span class="required">*</span></label>
+                    <textarea id="notice-content" rows="4" placeholder="Enter notice details..." required maxlength="2000" style="width: 100%; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-primary); background: var(--bg-input); color: var(--text-primary); resize: vertical;"></textarea>
+                </div>
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+                    <div class="form-group">
+                        <label for="notice-target-role">Target Audience <span class="required">*</span></label>
+                        <select id="notice-target-role" required>
+                            <option value="all">All (Everyone)</option>
+                            <option value="teacher">Teachers Only</option>
+                            <option value="student">Students Only</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="notice-priority">Priority <span class="required">*</span></label>
+                        <select id="notice-priority" required>
+                            <option value="normal">Normal</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="notice-expires-at">Expiration Date (Optional)</label>
+                    <input type="date" id="notice-expires-at">
+                </div>
+                <button type="submit" class="btn-primary w-100" id="notice-submit-btn" style="margin-top: 10px;">
+                    <i class="fa-solid fa-bullhorn"></i> Publish Notice
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
